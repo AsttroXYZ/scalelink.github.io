@@ -44,6 +44,7 @@ body {
 
 .above-circles {
     z-index: 999;
+    position: relative;
 }
 
 .backdrop {
