@@ -1,7 +1,5 @@
 body {
     background-color: black;
-    overflow-x: hidden;
-    overflow-y: hidden;
 }
 
 .bg-circle {
@@ -30,6 +28,8 @@ body {
 .container-fluid {
     background-color: black;
     color: white;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .navbar {
@@ -53,6 +53,7 @@ body {
     padding: 10vh 5vw;
     margin: 5vh auto;
     backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     /* display: table; */
 }
 
@@ -123,9 +124,8 @@ body {
 }
 
 @media (max-width: 800px) {
-    body {
+    .container-fluid {
         overflow-y: visible;
-        overflow-x: hidden;
     }
     .backdrop {
         backdrop-filter: blur(30px);
