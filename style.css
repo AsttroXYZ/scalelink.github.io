@@ -4,6 +4,10 @@ body {
     overflow-y: hidden;
 }
 
+.background-circle {
+    z-index: 1;
+}
+
 .container-fluid {
     background-color: black;
     color: white;
@@ -98,6 +102,7 @@ body {
 @media (max-width: 800px) {
     body {
         overflow-y: visible;
+        overflow-x: hidden;
     }
     .content {
         width: 100%;
