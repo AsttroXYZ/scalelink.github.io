@@ -63,6 +63,7 @@ body {
     margin-right: 1vw;
 }
 .btn {
+    display: inline-block;
     padding: 2vh 2vw;
     border-radius: 100px;
     text-align: center;
