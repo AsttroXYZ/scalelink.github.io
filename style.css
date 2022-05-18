@@ -126,6 +126,7 @@ body {
 
 @media (max-width: 800px) {
     .page {
+        height: auto;
         overflow-y: visible;
     }
     .backdrop {
