@@ -130,6 +130,7 @@ body {
         overflow-y: visible;
     }
     .backdrop {
+        margin: 2vh auto;
         backdrop-filter: blur(30px);
         /* display: table; */
     }
@@ -176,8 +177,8 @@ body {
 .footer {
     color: rgba(255, 255, 255, 0.5);
     text-align: center;
-    margin-top: 2vh;
-    padding-bottom: 1vh;
+    margin-top: 3vh;
+    padding-bottom: 3vh;
 }
 
 .footer a {
