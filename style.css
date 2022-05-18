@@ -4,8 +4,27 @@ body {
     overflow-y: hidden;
 }
 
-.background-circle {
-    z-index: 1;
+.bg-circle {
+    position: absolute;
+    z-index: 0;
+}
+#bg-circle-top {
+    height: 80vh;
+    bottom: 60vh;
+}
+#bg-circle-bottom {
+    height: 80vh;
+    top: 60vh;
+}
+#bg-circle-left {
+    height: 80vh;
+    left: 50vw;
+    top: 10vh;
+}
+#bg-circle-right {
+    height: 80vh;
+    right: 50vw;
+    top: 10vh;
 }
 
 .container-fluid {
@@ -104,8 +123,20 @@ body {
         overflow-y: visible;
         overflow-x: hidden;
     }
+    .backdrop {
+        backdrop-filter: blur(30px);
+        /* display: table; */
+    }
     .content {
         width: 100%;
+    }
+    #bg-circle-top {
+        height: 80vh;
+        bottom: 50vh;
+    }
+    #bg-circle-bottom {
+        height: 80vh;
+        top: 50vh;
     }
     .main-image {
         /* display: table-cell; */
