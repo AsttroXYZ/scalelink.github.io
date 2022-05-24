@@ -1,1 +1,23 @@
-asttro.xyz 🚀
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function receiveMessage(e) {
+            var payload = e.data
+            if (payload.key == 'ethereumAddress') {
+                localStorage.setItem(payload.key, payload.data);
+            }
+        }
+        window.addEventListener('message',receiveMessage);
+        $(document).ready(() => {
+            var parent = window.parent;
+            var ethereumAddress = localStorage.getItem("ethereumAddress");
+            parent.postMessage({
+                "ethereumAddress": ethereumAddress,
+            }, "*");
+        })
+    </script>
+</head>
+<body>
+</body>
+</html>

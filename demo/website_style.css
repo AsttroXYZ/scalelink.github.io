@@ -30,10 +30,19 @@ body {
     color: white;
 }
 
-.navbar {
-    width: 90vw;
-    margin: 2vh auto;
+.demo-navbar {
     z-index: 999;
+    background-color: #252836;
+    height: initial;
+    position: relative;
+    height: 8vh;
+}
+
+.navbar-brand {
+    position: absolute;
+    top: 50%;
+    transform: translate(0%,-50%);
+    padding-left: 5vw;
 }
 
 .page {
@@ -55,14 +64,18 @@ body {
     margin: 5vh auto;
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
     /* display: table; */
 }
 
-.content {
-    /* display: table-cell; */
-    /* vertical-align: middle; */
-    padding: 5vh 5vw;
-    width: 60%;
+.demo-content {
+    min-height: 100%;
+    padding: 5vh 20vw;
+    width: 100%;
+    text-align: center;
 }
 
 .main-image {

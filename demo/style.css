@@ -1,0 +1,275 @@
+@font-face {
+    font-family: "Inter";
+    src: url("assets/fonts/Inter/Inter-Light.ttf") format("truetype");;
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Inter";
+    src: url("assets/fonts/Inter/Inter-Regular.ttf") format("truetype");;
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Inter";
+    src: url("assets/fonts/Inter/Inter-Medium.ttf") format("truetype");;
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Inter";
+    src: url("assets/fonts/Inter/Inter-SemiBold.ttf") format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Source Code Pro";
+    src: url("assets/fonts/Source_Code_Pro/SourceCodePro-Regular.ttf") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.tab {
+    margin-left: 3vw;
+    display: inline-block;
+}
+
+#modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+#modal-content {
+    background-color: #fefefe;
+    margin: 10vh auto; /* 15% from the top and centered */
+    padding: 10vh 10vw;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    min-height: 60vh;
+    border-radius: 20px;
+}
+
+.modal-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.modal-section {
+    margin-bottom: 5vh;
+}
+
+.modal-continue {
+    width: 100%;
+    border: none;
+    background-color: #001AF5;
+    color: white;
+    border-radius: 5px;
+    height: 5vh;
+    border: 1px solid transparent;
+}
+.modal-continue:hover {
+    color: #001AF5;
+    background-color: white;
+    border: 1px solid #001AF5;
+}
+
+body {
+    background-color: #F1F1F1;
+    font-family: "Inter", "Times", sans-serif;
+}
+
+.row {
+    margin-bottom: 5vh;
+}
+
+.container-fluid {
+    background-color: black;
+    color: white;
+}
+
+.demo-navbar {
+    z-index: 2;
+    background-color: #252836;
+    height: initial;
+    height: 8vh;
+}
+
+.navbar-brand {
+    position: absolute;
+    top: 50%;
+    transform: translate(0%,-50%);
+    padding-left: 5vw;
+}
+
+.navbar-brand .demo-subtext-header {
+    font-weight: 300;
+}
+
+.navbar-navigation {
+    height: 8vh;
+    position: relative;
+    color: white;
+    position:relative;
+    display:flex;
+    justify-content: right;
+    align-items:center;
+}
+
+.navbar-navigation a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.navbar-navigation div {
+    height: 6vh;
+    margin-right: 2vw;
+    position:relative;
+    justify-content: right;
+    align-items:center;
+    font-size: 0.9rem;
+    /* border: 1px solid white; */
+}
+
+#next-btn {
+    background: #001AF5;
+    border-radius: 5px;
+    padding: 0 5vw;
+}
+
+.flex {
+    display: flex;
+}
+
+.hidden {
+    display: none;
+}
+
+#next-btn:hover {
+    background-color: white;
+    color: #001AF5;
+}
+
+#step-name {
+    font-weight: 600;
+    display:flex;
+}
+
+#back-btn {
+    display:flex;
+    font-weight: 300;
+}
+
+.row {
+    margin-top: 12vh;
+}
+
+.box {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    padding: 40px;
+    margin-bottom: 30px;
+    color: #3e3e3e;
+}
+
+.box .section-header {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.box .input-header {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.box .input {
+    border: 1px solid #d2d2d2;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    font-weight: 400;
+}
+
+select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.input:focus {
+    outline: none;
+    border: 1px solid #252836;
+}
+
+.box .input::placeholder {
+    color: #b7b7b7;
+    font-size: 0.9rem;
+}
+
+.input::file-selector-button {
+    background-color: #252836;
+    color: white;
+    border: none;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.input::file-selector-button:hover {
+    background-color: #36406C;
+}
+
+.section-subtext {
+    margin-bottom: 10px;
+    display: none;
+}
+ 
+.submit-btn {
+    width: 100%;
+    background-color: #252836;
+    color: white;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+}
+.submit-btn:hover {
+    background-color: #36406C;
+}
+
+.successfully-launched {
+    width: 100%;
+    background-color: transparent;
+    color: #252836;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-weight: 600;
+    border: none;
+}
+
+.code-container {
+    margin: 0 auto;
+    margin-top: 2vh;
+    background-color: #EBEBEB;
+    border-radius: 5px;
+    min-height: 30vh;
+    padding: 2vh 2vw;
+    font-family: "Source Code Pro";
+}

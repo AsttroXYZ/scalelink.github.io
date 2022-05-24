@@ -1,0 +1,115 @@
+<head>
+    <head>
+        <title>Asttro | Demo</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta property="og:title" content="Asttro | Advertising for the New Web" />
+        <meta property="og:image" content="https://asttro.xyz/assets/img/og-preview-image.png" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../style.css">  
+        <link rel="icon" href="../assets/img/favicon.png">
+    </head>
+    <body>
+        <div id="modal">
+            <div id="modal-content">
+                <div class="modal-title modal-section">
+                    First step: Merchant launches a campaign
+                </div>
+                <div class="modal-overview modal-section">
+                    <b>Overview</b><br>
+                    When a user transacts with a merchant who had launched the campaign, Asttro identifies the transaction on the blockchain. The transaction is then parsed and attributed back to the publisher who originally showed the merchant’s advertisement to that user.
+                </div>
+                <div class="modal-instructions modal-section">
+                    <b>Instructions</b><br>
+                    In this step, you will act as the User who is going to make a purchase from the Merchant. Go ahead and complete the transaction. Make sure to sign it with your wallet in order for it to go through.
+                </div>
+                <button id="modal-continue" class="submit-btn">Continue</button>
+            </div>
+        </div>
+        <nav class="navbar-dark demo-navbar fixed-top">
+            <div class="navbar-brand mb-0 h1">Asttro <span class="demo-subtext-header">Demo</span></div>
+            <div class="navbar-navigation">
+                <a href="../overview"><div id="back-btn"><-- Back</div></a>
+                <div id="step-name">Merchant launches a Campaign</div>
+                <a href="../campaign_smart_contract"><div id="next-btn" class="hidden">Next</div></a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <div class="box">
+                        <div class="section-header">Details</div>
+                        <label for="campaign-name" class="input-header">Title</label><br>
+                        <input type="text" id="campaign-name" placeholder="Name" name="name" class="input"></input><br><br>
+                
+                        <label for="campaign-description" class="input-header">Describe your brand, product, or service in one sentence</label><br>
+                        <input type="text" id="campaign-description" placeholder="The best thing since sliced bread" maxlength="50" name="description" class="input"></input><br><br>
+                
+                        <label for="campaign-name" class="input-header">What URL do you want to point to (Landing Page, Online Store, Application)</label><br>
+                        <input type="text" id="campaign-url" placeholder="https://acme.com" name="url" class="input"></input><br><br>
+                
+                        <label for="campaign-image" class="input-header">Upload your campaign image</label><br>
+                        <input type="file" id="campaign-image" name="image" class="input"></input><br><br>
+                    </div>
+    
+                    <div class="box">
+                        <div class="section-header">Ad Preview</div>
+                        <div class="section-subtext" id="image-preview-subtext">This is how your ad will look on a website:</div>
+                        <div class="sclnk-ad-container" style="height: 16vh; display: grid; background-color: #F9F9F9; border-radius: 5px;">
+                            <div class="sclnk-ad-body" style="width: 100%; height: 100%; background-size: 100%; border-radius: 5px; position: relative;">
+                                <span id="image-preview" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">No image selected</span>
+                                <div class="sclnk-ad-actions" style="width: 100%; height: 45%;">
+                                    <div class="sclnk-ad-offer" style="cursor: pointer; display: flex; align-items: center; height: 100%; width: 30%; float: right; visibility: hidden; margin: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 5px; user-select: none; -moz-user-select: none; -webkit-user-select: none;">
+                                        <div class="sclnk-ad-offer-activate" style="margin-left: 10px; display: flex; width: 25%; aspect-ratio: 1; background-color: white; border-radius: 50%">
+                                            <p class="sclnk-ad-offer-activate-icon" style="margin: auto;">&#43;</p>
+                                        </div>
+                                        <div class="sclnk-ad-offer-copy" style="text-align: center; margin-left: 10px;">
+                                            <div class="sclnk-ad-offer-amount" style="font-size: 20px;">
+                                                10%
+                                            </div>
+                                            <div class="sclnk-ad-offer-expiration" style="font-size: 14px; color: #434343">
+                                                7 days left
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-6">
+                    <div class="box">
+                        <div class="section-header">Constraints</div>
+                        <label class="input-header" for="campaign-budget">What is the total budget? ($USDC)</label><br>
+                        <input type="text" class="input" id="campaign-budget" placeholder="$10,000" name="budget"></input><br><br>
+                        
+                        <label class="input-header" for="campaign-expiration">When does this campaign end?</label><br>
+                        <input type="date" class="input" id="campaign-expiration" name="expiration"></input><br><br>
+                    </div>
+    
+                    <div class="box">
+                        <div class="section-header">Transaction Definition</div>
+                        <label class="input-header" for="blockchains">Choose the blockchain where users will transact with you:</label><br>
+                        <select class="input" name="blockchains" id="blockchains" name="blockchain">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="goerli">Goerli Testnet</option>
+                            <option value="localhost">Localhost 8545</option>
+                            <option value="ethereum_mainnet">Ethereum Mainnet</option>
+                        </select><br><br>
+                
+                        <label class="input-header" for="campaign-to-address">What is your address for this blockchain?</label><br>
+                        <input class="input" type="text" id="campaign-to-address" placeholder="0X0" name="address"></input><br><br>
+                
+                        <label class="input-header" for="campaign-reward-amount">What % of the tranasction amount should users get back as a reward?</label><br>
+                        <input class="input" type="number" id="campaign-reward-amount" placeholder="10" name="reward"></input><br><br>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="submit-btn" type="submit" id="launch-campaign">Launch Campaign</button>
+                </div>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</head>
