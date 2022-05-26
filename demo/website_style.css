@@ -25,6 +25,10 @@ body {
     top: 10vh;
 }
 
+a {
+    text-decoration: none;
+}
+
 .container-fluid {
     background-color: black;
     color: white;

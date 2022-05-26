@@ -39,7 +39,7 @@ campaign_budget.addEventListener('input', function(){
     campaign_budget.value = "$" + current_value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 })
 
-launch_campaign.addEventListener('click', function() {
+function createCampaign() {
     let campaign_data = {}
     let error = false;
     document.querySelectorAll(['input', 'select']).forEach( input => {
@@ -53,19 +53,22 @@ launch_campaign.addEventListener('click', function() {
     if (error) {
         return;
     }
-    // update to send to backend and save the correct values in localstorage if any
-    const campaign_id = 'demo_campaign';
-    const merchant_name = 'Demo Merchant';
-    const timestamp = new Date();
-    campaign_data.campaign_id = campaign_id;
-    campaign_data.merchant_name = merchant_name;
-    campaign_budget.timestamp = timestamp;
-    localStorage.setItem('current_campaign', JSON.stringify(campaign_data))
+    // const campaign_id = 'demo_campaign';
+    // const merchant_name = 'Demo Merchant';
+    // const timestamp = new Date();
+    // campaign_data.campaign_id = campaign_id;
+    // campaign_data.merchant_name = merchant_name;
+    // campaign_budget.timestamp = timestamp;
+    // localStorage.setItem('current_campaign', JSON.stringify(campaign_data))
+    const url = "http://127.0.0.1:5000/campaigns"
+    $.post("demo_test_post.asp", campaign_data, ()=>{});
     campaign_launched = true;
     launchSuccess();
     next_step_available = true;
     activateNextStep();
-})
+}
+
+launch_campaign.addEventListener('click', createCampaign)
 
 campaign_image.addEventListener('change', function() {
     const selected_image = campaign_image.files[0]

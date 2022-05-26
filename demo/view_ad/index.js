@@ -1,15 +1,32 @@
-const accountAddress = document.querySelector("#accountAddress")
-let receiver = document.getElementById('scalelinkiframe').contentWindow;
+const next_step = document.getElementById("next-btn");
+let next_step_available = false;
+function activateNextStep() {
+    if (next_step_available) {
+        next_step.classList.remove('hidden');
+        next_step.style.display = 'flex'; 
+    }
+}
+
+const modal_continue = document.getElementById("modal-continue");
+modal_continue.addEventListener('click', ()=> {
+    document.getElementById('modal').style.display = 'none';
+})
+
+const receiver = document.getElementById('scalelinkiframe').contentWindow;
+receiver.addEventListener('load', ()=> {console.log('iframe loaded')})
 let offer_activated = false;
 let current_campaign;
 let campaign_id;
+let iFrame_ethereumAddress;
 
 function saveAddress(address, save_remote=false) {
     if (save_remote) {
-        receiver.top.postMessage({key: "ethereumAddress", method: "set", data: address}, "http://asttro.xyz/iframe.html");
+        setTimeout(() => {
+            receiver.postMessage({key: "ethereumAddress", method: "set", data: address}, "https://asttro.xyz/iframe.html");
+        }, 1000)
     }
     localStorage.setItem("ethereumAddress", address);
-    accountAddress.innerHTML += address
+    // accountAddress.innerHTML += address
 }
 
 async function getAddress(e=null) {
@@ -20,16 +37,14 @@ async function getAddress(e=null) {
 }
 
 function iFrameReceiveAddress(e) {
-    if (e.origin !== 'https://asttro.xyz/iframe.html') {
-        console.log(e.origin)
-        return
-    }
-    const payload = e.data
-    console.log(JSON.parse(payload))
-    if (payload.ethereumAddress) {
-        // this could also be sessionStorage - localStorage survives past session restart
-        saveAddress(payload.ethereumAddress, false)
-        console.log('eth address local storage value: ' + localStorage.getItem('ethereumAddress'))
+    if (e.origin == 'https://asttro.xyz') {
+        const payload = JSON.parse(JSON.stringify(e.data))
+        if (payload.ethereumAddress) {
+            iFrame_ethereumAddress = payload.ethereumAddress
+            // this could also be sessionStorage - localStorage survives past session restart
+            saveAddress(iFrame_ethereumAddress, false)
+            console.log('eth address local storage value: ' + iFrame_ethereumAddress)
+        }
     }
 }
 
@@ -55,33 +70,16 @@ async function getAccount() {
 async function activateOffer(e) {
     e.preventDefault();
     const publisher_id = current_campaign.publisher_id;
-    let timestamp = new Date();
-    timestamp = timestamp.toString();
+    let activation_timestamp = new Date();
+    activation_timestamp = activation_timestamp.toString();
     const user_id = localStorage.getItem('ethereumAddress') || await getAccount();
-    const message = {publisher_id, campaign_id, user_id, timestamp}
+    const message = {publisher_id, campaign_id, user_id, activation_timestamp}
     const signature = await signOffer(user_id, message)
     if (signature) {
-        console.log(signature)
-        saveActivationSignature(publisher_id, campaign_id, user_id, timestamp, message, signature)
+        saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, message, signature)
+        next_step_available = true;
+        activateNextStep()
     }
-}
-
-function saveActivationSignature(publisher_id, campaign_id, user_id, timestamp, message, signature) {
-    if (!localStorage.getItem('activations')) {
-        localStorage.setItem('activations', JSON.stringify([]))
-    }
-    let curr_storage = JSON.parse(localStorage.getItem('activations'))
-    curr_storage.push({publisher_id, campaign_id, user_id, timestamp, message, signature})
-    localStorage.setItem('activations', JSON.stringify(curr_storage))
-}
-
-function saveAdServe(data) {
-    if (!localStorage.getItem('ad_serves')) {
-        localStorage.setItem('ad_serves', JSON.stringify([]))
-    }
-    let curr_storage = JSON.parse(localStorage.getItem('ad_serves'))
-    curr_storage.push(data)
-    localStorage.setItem('ad_serves', JSON.stringify(curr_storage))
 }
 
 async function signOffer(account, offer_data) {
@@ -104,10 +102,39 @@ async function signOffer(account, offer_data) {
 }
 
 async function getActivationHash(offer_data) {
-    const url = `http://127.0.0.1:8081/hash_activation?user_id=${offer_data.user_id}&campaign_id=${offer_data.campaign_id}&publisher_id=${offer_data.publisher_id}&timestamp=${offer_data.timestamp}`
+    const url = `http://127.0.0.1:8081/hash_activation?user_id=${offer_data.user_id}&campaign_id=${offer_data.campaign_id}&publisher_id=${offer_data.publisher_id}&activation_timestamp=${offer_data.activation_timestamp}`
     return fetch(url)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
+}
+
+function saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, message, signature) {
+    // if (!localStorage.getItem('activations')) {
+    //     localStorage.setItem('activations', JSON.stringify([]))
+    // }
+    // let curr_storage = JSON.parse(localStorage.getItem('activations'))
+    // curr_storage.push({publisher_id, campaign_id, user_id, timestamp, message, signature})
+    // localStorage.setItem('activations', JSON.stringify(curr_storage))
+    const data = {
+        "signature": signature,
+        "activation_data": JSON.stringify({
+            publisher_id,
+            campaign_id,
+            user_id,
+            activation_timestamp
+        })
+    }
+    const url = "http://127.0.0.1:5000/activations"
+    $.post(url, data, ()=>{});
+}
+
+function saveAdServe(data) {
+    if (!localStorage.getItem('ad_serves')) {
+        localStorage.setItem('ad_serves', JSON.stringify([]))
+    }
+    let curr_storage = JSON.parse(localStorage.getItem('ad_serves'))
+    curr_storage.push(data)
+    localStorage.setItem('ad_serves', JSON.stringify(curr_storage))
 }
 
 function diffDays(exp) {
@@ -143,9 +170,8 @@ function injectAd() {
 
 function pointToCorrectAddress() {
     const ethereumAddress = localStorage.getItem('ethereumAddress');
-    const publisherEthereumAddress = localStorage.getItem('publisherEthereumAddress')
-    if (!ethereumAddress && publisherEthereumAddress) {
-        saveAddress(publisherEthereumAddress, true)
+    if (ethereumAddress && !iFrame_ethereumAddress) {
+        saveAddress(ethereumAddress, true)
     } else if (!ethereumAddress) {
         getAddress();
     }
@@ -183,6 +209,10 @@ function parseImage(path) {
     return full_path
 }
 
+const connect_wallet = document.getElementById('connect-wallet');
+connect_wallet.addEventListener('click', (e) => {
+    getAddress();
+});
 ad_offer.addEventListener('click', (e) => {
     activateOffer(e);
 })

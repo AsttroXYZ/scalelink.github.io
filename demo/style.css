@@ -272,4 +272,26 @@ select {
     min-height: 30vh;
     padding: 2vh 2vw;
     font-family: "Source Code Pro";
+    overflow-wrap: break-word;
+}
+
+.header-container {
+    width: 100%;
+    margin-bottom: 10vh;
+}
+#connect-wallet {
+    float: right;
+    background-color: black;
+    font-weight: 500;
+    color: white;
+    padding: 2vh 2vw;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#connect-wallet:hover {
+    background-color: grey;
+}
+
+#merchant-page {
+    text-align: center;
 }
