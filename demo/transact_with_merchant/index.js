@@ -2,6 +2,8 @@ const next_step = document.getElementById("next-btn");
 let next_step_available = false;
 let transaction_complete = false;
 const current_campaign = JSON.parse(localStorage.getItem("current_campaign"))
+const item_name = document.getElementById("item-name")
+const item_description = document.getElementsByClassName("item-description")[0]
 const item_preview_img = document.getElementById("item-preview-img")
 const purchase_btn = document.getElementById("purchase-btn")
 
@@ -27,6 +29,8 @@ modal_continue.addEventListener('click', ()=> {
 // requires current campaign to have a valid to address
 // purchase_btn.setAttribute('to_address', current_campaign.address);
 purchase_btn.setAttribute('to_address', "0x4f34b09b8d1f8A8c9c62cd3CfF77eA519125d119");
+item_name.innerHTML = current_campaign.name;
+item_description.innerHTML = current_campaign.description;
 item_preview_img.src = current_campaign.image;
 
 async function purchaseItem(to_address, value_ether, gas_price_gwei, gas_limit_base, chain_id_base) {

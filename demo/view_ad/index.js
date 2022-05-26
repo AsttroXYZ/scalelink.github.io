@@ -195,7 +195,7 @@ window.addEventListener('load', async () => {
     await $.get(url, (payload)=> {
         response = payload;
     })
-    current_campaign = response.campaigns[0]
+    current_campaign = response.campaigns[0];
     current_campaign.publisher_id = 'merkle_blog';
     const publisher_id = current_campaign.publisher_id;
     campaign_id = current_campaign.campaign_id;
@@ -203,6 +203,7 @@ window.addEventListener('load', async () => {
     const expiration = current_campaign.expiration;
     // get the image from the backend
     const image = current_campaign.image;
+    localStorage.setItem("current_campaign", JSON.stringify(current_campaign))
     document.querySelector('.sclnk-ad-offer-amount').innerHTML = `${offer}%`
     document.querySelector('.sclnk-ad-offer-expiration').innerHTML = `${diffDays(expiration)} days`
     document.querySelector('.sclnk-ad-body').style.backgroundImage = `url(${image})`
