@@ -1,3 +1,4 @@
+const API_ENDPOINT = "http://127.0.0.1:5000"
 const next_step = document.getElementById("next-btn");
 let next_step_available = false;
 function activateNextStep() {
@@ -102,7 +103,11 @@ async function signOffer(account, offer_data) {
 }
 
 async function getActivationHash(offer_data) {
-    const url = `http://127.0.0.1:8081/hash_activation?user_id=${offer_data.user_id}&campaign_id=${offer_data.campaign_id}&publisher_id=${offer_data.publisher_id}&activation_timestamp=${offer_data.activation_timestamp}`
+    const url = `http://127.0.0.1:8081/hash_activation?
+    user_id=${offer_data.user_id}
+    &campaign_id=${offer_data.campaign_id}
+    &publisher_id=${offer_data.publisher_id}
+    &activation_timestamp=${offer_data.activation_timestamp}`
     return fetch(url)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
@@ -124,7 +129,7 @@ function saveActivationSignature(publisher_id, campaign_id, user_id, activation_
             activation_timestamp
         })
     }
-    const url = "http://127.0.0.1:5000/activations"
+    const url = `${API_ENDPOINT}/activations`
     $.post(url, data, ()=>{});
 }
 
@@ -185,14 +190,19 @@ const ad_offer = document.getElementsByClassName("sclnk-ad-offer")[0]
 const close_ad = document.getElementsByClassName("sclnk-close-ad")[0]
 
 window.addEventListener('load', async () => {
-    current_campaign = JSON.parse(localStorage.getItem('current_campaign'))
+    const url = `${API_ENDPOINT}/campaigns`
+    let response;
+    await $.get(url, (payload)=> {
+        response = payload;
+    })
+    current_campaign = response.campaigns[0]
     current_campaign.publisher_id = 'merkle_blog';
     const publisher_id = current_campaign.publisher_id;
     campaign_id = current_campaign.campaign_id;
     const offer = current_campaign.reward;
     const expiration = current_campaign.expiration;
     // get the image from the backend
-    const image = parseImage(current_campaign.image);
+    const image = current_campaign.image;
     document.querySelector('.sclnk-ad-offer-amount').innerHTML = `${offer}%`
     document.querySelector('.sclnk-ad-offer-expiration').innerHTML = `${diffDays(expiration)} days`
     document.querySelector('.sclnk-ad-body').style.backgroundImage = `url(${image})`

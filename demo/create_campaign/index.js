@@ -1,3 +1,4 @@
+const API_ENDPOINT = "http://127.0.0.1:5000"
 const next_step = document.getElementById("next-btn");
 let next_step_available = false;
 function activateNextStep() {
@@ -40,19 +41,21 @@ campaign_budget.addEventListener('input', function(){
 })
 
 function createCampaign() {
-    let campaign_data = {}
+    let campaign_data = new FormData();
     let error = false;
     document.querySelectorAll(['input', 'select']).forEach( input => {
         if (!input.value) {
             console.log(`please input a value for ${input.name}`)
             error = true;
         } else {
-            campaign_data[input.name] = input.value;
+            value = input.name == "image" ? input.files[0] : input.value
+            campaign_data.append(input.name, value)
         }
     });
     if (error) {
         return;
     }
+    campaign_data.append("merchant_id", "demo_merchant")
     // const campaign_id = 'demo_campaign';
     // const merchant_name = 'Demo Merchant';
     // const timestamp = new Date();
@@ -60,8 +63,20 @@ function createCampaign() {
     // campaign_data.merchant_name = merchant_name;
     // campaign_budget.timestamp = timestamp;
     // localStorage.setItem('current_campaign', JSON.stringify(campaign_data))
-    const url = "http://127.0.0.1:5000/campaigns"
-    $.post("demo_test_post.asp", campaign_data, ()=>{});
+    const url = `${API_ENDPOINT}/campaigns`
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: campaign_data,
+        async: false,
+        cache: false,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
+        success: function (response) {
+           alert(response);
+        }
+     });
     campaign_launched = true;
     launchSuccess();
     next_step_available = true;
