@@ -1,8 +1,8 @@
 const API_ENDPOINT = "http://127.0.0.1:5000"
 const code_container = document.getElementsByClassName("code-container")[0];
 
-const last_txHash = localStorage.getItem("last_txHash")
-const url = `${API_ENDPOINT}/attributed_transacions`
+const last_tx_hash = localStorage.getItem("last_tx_hash")
+const url = `${API_ENDPOINT}/attributed_transacions?tx_hash=$last_tx_hash{}`
 let response;
 await $.get(url, (payload)=> {
     response = payload;

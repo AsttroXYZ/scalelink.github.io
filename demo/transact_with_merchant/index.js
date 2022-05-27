@@ -45,14 +45,14 @@ async function purchaseItem(to_address, value_ether, gas_price_gwei, gas_limit_b
         chainId: decimal_to_wei_to_hex(chain_id_base, 'base'), // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
       };
       
-    // txHash is a hex string
+    // tx_hash is a hex string
     // As with any RPC call, it may throw an error
     ethereum.request({ method: 'eth_requestAccounts' }).then(async () => {
-        const txHash = await ethereum.request({
+        const tx_hash = await ethereum.request({
             method: 'eth_sendTransaction',
             params: [transactionParameters],
         });
-        localStorage.setItem("last_txHash", txHash)
+        localStorage.setItem("last_tx_hash", tx_hash)
         next_step_available = true;
         activateNextStep();
         transaction_complete = true;
