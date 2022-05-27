@@ -52,6 +52,7 @@ async function purchaseItem(to_address, value_ether, gas_price_gwei, gas_limit_b
             method: 'eth_sendTransaction',
             params: [transactionParameters],
         });
+        localStorage.setItem("last_txHash", txHash)
         next_step_available = true;
         activateNextStep();
         transaction_complete = true;
