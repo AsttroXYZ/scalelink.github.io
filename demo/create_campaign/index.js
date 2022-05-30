@@ -57,10 +57,14 @@ async function createContract() {
     let contract = new web3.eth.Contract(abi);
     let smart_contract_address;
     const amount = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))
+    const payout = 10
+    const reward = document.getElementById("campaign-reward-amount").value
+    const expiration = document.getElementById("campaign-expiration").value
+    const duration = diffDateSeconds(expiration)
     await contract.deploy({
         // check if bytecode requires 0x prepended
         data: bytecode,
-        arguments: [10, 10, 10]
+        arguments: [payout, reward, duration]
     })
     .send({
         from: account,
@@ -78,6 +82,14 @@ async function createContract() {
         smart_contract_address = newContractInstance.options.address
     });
     return smart_contract_address;
+}
+
+function diffDateSeconds(date1) {
+    const now = new Date();
+    const date = new Date(date1);
+    const diffTime = Math.abs(date - now);
+    const diffSeconds = Math.ceil(diffTime / 1000); 
+    return diffSeconds
 }
 
 function uploadCampaignToBackend(campaign_data) {
@@ -99,6 +111,9 @@ function uploadCampaignToBackend(campaign_data) {
 }
 
 async function createCampaign() {
+    const smart_contract_address = await createContract();
+    console.log(`Smart Contract Address: ${smart_contract_address}`)
+
     let campaign_data = new FormData();
     let error = false;
     document.querySelectorAll(['input', 'select']).forEach( input => {
@@ -113,9 +128,6 @@ async function createCampaign() {
     if (error) {
         return;
     }
-    
-    const smart_contract_address = await createContract();
-    console.log(`Smart Contract Address: ${smart_contract_address}`)
 
     campaign_data.append("merchant_id", "demo_merchant");
     campaign_data.append("smart_contract_address", smart_contract_address);
