@@ -1,5 +1,6 @@
 const API_ENDPOINT = "http://127.0.0.1:5000"
 const next_step = document.getElementById("next-btn");
+
 let next_step_available = false;
 function activateNextStep() {
     if (next_step_available) {
@@ -40,7 +41,64 @@ campaign_budget.addEventListener('input', function(){
     campaign_budget.value = "$" + current_value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 })
 
-function createCampaign() {
+
+async function createContract() {
+    const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
+	const account = accounts[0]
+    const web3 = new Web3(window.ethereum);
+    web3.eth.defaultAccount = account;
+    const url = `${API_ENDPOINT}/smart_contract`
+    let smart_contract_data;
+    await $.get(url, (payload)=> {
+        smart_contract_data = payload;
+    })
+    abi = smart_contract_data.abi
+    bytecode = smart_contract_data.bytecode
+    let contract = new web3.eth.Contract(abi);
+    let smart_contract_address;
+    const amount = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))
+    await contract.deploy({
+        // check if bytecode requires 0x prepended
+        data: bytecode,
+        arguments: [10, 10, 10]
+    })
+    .send({
+        from: account,
+        gas: 4712388,
+        gasPrice: '100000000000',
+        value: amount*(10**18) / 1950
+    }, function(error, transactionHash){
+        if (error) {
+            console.log("ERROR")
+        } else {
+            console.log(`Transaction Hash: ${transactionHash}`)
+        }
+    })
+    .then(function(newContractInstance){
+        smart_contract_address = newContractInstance.options.address
+    });
+    return smart_contract_address;
+}
+
+function uploadCampaignToBackend(campaign_data) {
+    const url = `${API_ENDPOINT}/campaigns`
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: campaign_data,
+        async: false,
+        cache: false,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
+        success: function (response) {
+           console.log(JSON.stringify(response));
+        }
+     });
+
+}
+
+async function createCampaign() {
     let campaign_data = new FormData();
     let error = false;
     document.querySelectorAll(['input', 'select']).forEach( input => {
@@ -55,28 +113,14 @@ function createCampaign() {
     if (error) {
         return;
     }
-    campaign_data.append("merchant_id", "demo_merchant")
-    // const campaign_id = 'demo_campaign';
-    // const merchant_name = 'Demo Merchant';
-    // const timestamp = new Date();
-    // campaign_data.campaign_id = campaign_id;
-    // campaign_data.merchant_name = merchant_name;
-    // campaign_budget.timestamp = timestamp;
-    // localStorage.setItem('current_campaign', JSON.stringify(campaign_data))
-    const url = `${API_ENDPOINT}/campaigns`
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: campaign_data,
-        async: false,
-        cache: false,
-        contentType: false,
-        enctype: 'multipart/form-data',
-        processData: false,
-        success: function (response) {
-           alert(response);
-        }
-     });
+    
+    const smart_contract_address = await createContract();
+    console.log(`Smart Contract Address: ${smart_contract_address}`)
+
+    campaign_data.append("merchant_id", "demo_merchant");
+    campaign_data.append("smart_contract_address", smart_contract_address);
+    campaign_data.append("payout", 10);
+    uploadCampaignToBackend(campaign_data);
     campaign_launched = true;
     launchSuccess();
     next_step_available = true;
