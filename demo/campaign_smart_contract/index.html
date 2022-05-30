@@ -40,50 +40,114 @@
                     <div class="box">
                         Smart contract for: <b id="smart-contract-title"></b>
                         <div class="code-container">
-pragma solidity >=0.7.0 <0.9.0; <br><br>
-
-contract VerifySignature {
-    <br><br>
-    <p class="tab">
-        function getHash(string memory str) public pure returns (bytes32) {<br>
-            <span class="tab">return keccak256(abi.encodePacked(str));</span><br>
-    }
-    </p>
-
-    <br>
-    <p class="tab">
-        function getEthSignedHash(bytes32 _messageHash) public pure returns (bytes32) {<br>
-            <span class="tab">return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _messageHash));</span><br>
-    }
-    </p>
-
-    <br>
-    <p class="tab">
-        function splitSignature(bytes memory sig) internal pure returns (uint8 v, bytes32 r, bytes32 s) {<br>
-            <span class="tab">
-                require(sig.length == 65);<br>
-                assembly {<br>
-                    <span class="tab">
-                    r := mload(add(sig, 32))<br>
-                    s := mload(add(sig, 64))<br>
-                    v := byte(0, mload(add(sig, 96)))
-                    </span><br>
-                }<br>
-                return (v, r, s);
-            </span><br>
-    }
-    </p>
-
-    <p class="tab">
-        function verify(bytes32 _ethSignedMessageHash, bytes memory _signature) public pure returns (address) {<br>
-            <span class="tab">
-                (uint8 v, bytes32 r, bytes32 s) = splitSignature(_signature);<br>
-                return ecrecover(_ethSignedMessageHash, v, r, s);
-            </span><br>
-    }
-    </p><br>
-}<br>
-<br>
+                            pragma solidity >=0.7.0 <0.9.0;<br>
+                                <br>
+                            import "./AsttroAccount.sol";<br>
+                            import "./Verify.sol";<br>
+                            <br>
+                            struct Activation {<br>
+                                <span class="tab">string message;<br>
+                                bytes sig;
+                                </span><br>
+                            }<br>
+                            <br>
+                            contract AsttroCampaign is AsttroAccount, Verify {<br>
+                                <br>
+                                <span class="tab">
+                                uint public expiration;<br>
+                                uint internal publisherPayout;<br>
+                                uint internal asttroPayout;<br>
+                                uint internal userReward;<br>
+                                uint internal totalPayout;<br>
+                                <br>
+                                mapping (bytes => Activation) private txToAct;<br>
+                                mapping (bytes => Transaction) private actSigToTx;<br>
+                                <br>
+                                constructor(uint _payout, uint _reward, uint _duration) payable AsttroAccount() {<br>
+                                    <span class="tab">
+                                    require(_payout > 0 && _reward > 0, "Must provide non-zero payouts to publishers and users");<br>
+                                    require(_duration > 0, "Campaign must expire in the future");<br>
+                                    require(msg.value >= _payout + _reward, "Insufficient balance deposited to make a payout");<br>
+                                    <br>
+                                    publisherPayout = (_payout * 8) / 10;<br>
+                                    asttroPayout = (_payout * 2) / 10;<br>
+                                    userReward = _reward;<br>
+                                    totalPayout = _payout + _reward;<br>
+                                    expiration = block.timestamp + _duration;<br>
+                                    </span><br>
+                                }<br>
+                                <br>
+                                receive() external payable {...}<br><br>
+                            
+                                function shutdown() public isMerchant {<br>
+                                    <span class="tab">
+                                    selfdestruct(payable(msg.sender));<br>
+                                    </span><br>
+                                }<br>
+                                <br>
+                                function extend(uint _extraDuration) external isMerchant {<br>
+                                    <span class="tab">
+                                    if (block.timestamp < expiration) {<br>
+                                        <span class="tab">
+                                        expiration += _extraDuration;<br>
+                                        </span><br>
+                                    } else {<br>
+                                        <span class="tab">
+                                        expiration = block.timestamp + _extraDuration;<br>
+                                        </span><br>
+                                    }</span><br>
+                                }<br>
+                                <br>
+                                function payout(<br>
+                                    <span class="tab">
+                                    Activation calldata _activation,<br>
+                                    Transaction calldata _transaction,<br>
+                                    address _publisher,<br>
+                                    address _user<br>
+                                    </span><br>
+                                ) external isAsttro {<br>
+                                    <span class="tab">
+                                    require(address(this).balance >= totalPayout, "Not enough balance to do payout");<br>
+                                    require(block.timestamp <= expiration, "Campaign has expired");<br>
+                                    <br>
+                                    require(_user != getAsttro(), "Cant payout Asttro instead of user");<br>
+                                    require(_publisher != getAsttro(), "Cant payout Asttro instead of publisher");  // TBD if Asttro can be publisher<br>
+                                    require(_user != _publisher, "User cannot be same as publisher");<br>
+                                    require(_user != getMerchant(), "Cant payout Merchant instead of user");<br>
+                                    require(_publisher != getMerchant(), "Cant payout Merchant instead of publisher");<br>
+                                    <br>
+                                    require(txToAct[_transaction.hash].sig.length == 0, "This transaction has been attributed and paid out before");<br>
+                                    require(actSigToTx[_activation.sig].hash.length == 0, "This activation has been attributed and paid out before");<br>
+                                    require(verify(_user, _activation.message, bytes(_activation.sig)), "User to-be rewarded did not sign this activation");<br>
+                            <br>
+                                    txToAct[_transaction.hash] = _activation;<br>
+                                    actSigToTx[_activation.sig] = _transaction;<br>
+                            <br>
+                                    payable(_user).transfer(userReward);<br>
+                                    payable(_publisher).transfer(publisherPayout);<br>
+                                    payable(getAsttro()).transfer(asttroPayout);<br>
+                                    </span>
+                                }<br>
+                            <br>
+                                function getAttributedActivation(bytes calldata _transactionHash) external view returns (Activation memory) {<br>
+                                    <span class="tab">
+                                    return txToAct[_transactionHash];
+                                    </span><br>
+                                }<br>
+                            <br>
+                                function getAttributedTransaction(bytes calldata _activationSig) external view returns (Transaction memory) {<br>
+                                    <span class="tab">
+                                    return actSigToTx[_activationSig];
+                                    </span><br>
+                                }<br>
+                            <br>
+                                function getPayouts() external view returns (uint, uint, uint) {<br>
+                                    <span class="tab">
+                                    return (publisherPayout, asttroPayout, userReward);
+                                    </span><br>
+                                }<br>
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
