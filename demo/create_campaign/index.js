@@ -1,5 +1,6 @@
 const API_ENDPOINT = "http://127.0.0.1:5000"
 const next_step = document.getElementById("next-btn");
+const web3 = new Web3(window.ethereum);
 
 let next_step_available = false;
 function activateNextStep() {
@@ -42,10 +43,9 @@ campaign_budget.addEventListener('input', function(){
 })
 
 
-async function createContract(amount_ether) {
+async function createContract(amount_ether, payout, reward) {
     const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 	const account = accounts[0]
-    const web3 = new Web3(window.ethereum);
     web3.eth.defaultAccount = account;
     const url = `${API_ENDPOINT}/smart_contract`
     let smart_contract_data;
@@ -56,8 +56,6 @@ async function createContract(amount_ether) {
     bytecode = smart_contract_data.bytecode
     let contract = new web3.eth.Contract(abi);
     let smart_contract_address;
-    const payout = 10
-    const reward = document.getElementById("campaign-reward-amount").value
     const expiration = document.getElementById("campaign-expiration").value
     const duration = diffDateSeconds(expiration)
     await contract.deploy({
@@ -110,8 +108,14 @@ function uploadCampaignToBackend(campaign_data) {
 }
 
 async function createCampaign() {
+    const payout_input = 0.01
+    const payout = (payout_input)*(10**18)
+    const reward_input = document.getElementById("campaign-reward-amount").value
+    const reward = (reward_input)*(10**18)
+
     const amount_ether = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))  / 1950
-    const smart_contract_address = await createContract(amount_ether);
+    
+    const smart_contract_address = await createContract(amount_ether, `${payout}`, `${reward}`);
     console.log(`Smart Contract Address: ${smart_contract_address}`)
 
     let campaign_data = new FormData();
@@ -132,7 +136,8 @@ async function createCampaign() {
     campaign_data.set("budget", amount_ether*(10**9))
     campaign_data.append("merchant_id", "62959f316ffb872d711a85bc");
     campaign_data.append("address", smart_contract_address);
-    campaign_data.append("payout", 10);
+    campaign_data.set("reward", reward)
+    campaign_data.append("payout", payout);
     campaign_data.append("start_time", new Date());
     uploadCampaignToBackend(campaign_data);
     campaign_launched = true;

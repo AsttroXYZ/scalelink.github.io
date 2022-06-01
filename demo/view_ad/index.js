@@ -111,24 +111,12 @@ async function getActivationHash(offer_data) {
 }
 
 function saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, signature) {
-    // if (!localStorage.getItem('activations')) {
-    //     localStorage.setItem('activations', JSON.stringify([]))
-    // }
-    // let curr_storage = JSON.parse(localStorage.getItem('activations'))
-    // curr_storage.push({publisher_id, campaign_id, user_id, timestamp, message, signature})
-    // localStorage.setItem('activations', JSON.stringify(curr_storage))
     const data = {
         'user_address': user_id,
         'publisher_address': publisher_id,
         'campaign_id': campaign_id,
         'activation_timestamp': activation_timestamp,
         "signature": signature,
-        // "activation_data": JSON.stringify({
-        //     publisher_id,
-        //     campaign_id,
-        //     user_id,
-        //     activation_timestamp
-        // })
     }
     const url = `${API_ENDPOINT}/activations`
     $.post(url, data, ()=>{});
@@ -153,25 +141,32 @@ function diffDays(exp) {
 }
 
 function injectAd() {
-    let main_content = document.getElementById("main-content");
-    let html = `<div class="sclnk-ad-body" style="position: sticky; bottom: 0; width: 100%; height: 14vh; background-position: center; border-radius: 5px;">
+    let ad_container = document.getElementById("top-content");
+    let html = `
+    <span>Automatic Cash Back</span>
+    <div class="sclnk-ad-container">
+        <div class="sclnk-ad-body">
             <div class="sclnk-ad-actions" style="width: 100%; height: 60%;">
                 <span class="sclnk-close-ad" style="color: white; display:inline-block; margin: 10px; cursor: pointer;">&#x2715</span>
-                <div class="sclnk-ad-offer" style="cursor: pointer; display: flex; text-align: center; align-items: center; height: 100%; width: 15%; float: right; margin: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 5px; user-select: none; -moz-user-select: none; -webkit-user-select: none;">
+                <div class="sclnk-ad-info">
+                    <b id="sclnk-ad-name"></b><br>
+                    <span id="sclnk-ad-description"></span>
+                </div>
+                <div class="sclnk-ad-offer">
                     <div class="sclnk-ad-offer-activate" style="margin-left: 10px; display: flex; width: 25%; aspect-ratio: 1; background-color: white; border-radius: 50%">
                         <p class="sclnk-ad-offer-activate-icon" style="margin: auto;">&#43;</p>
                     </div>
                     <div class="sclnk-ad-offer-copy" style="text-align: center; margin-left: 10px;">
                         <div class="sclnk-ad-offer-amount" style="font-size: 20px;"></div>
-                        <div class="sclnk-ad-offer-expiration" style="font-size: 14px; color: #434343">
+                        <div class="sclnk-ad-offer-expiration" style="font-size: 14px;">
                             7 days left
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>`
-    main_content.innerHTML += html;
+    </div>`
+    ad_container.innerHTML += html;
 }
 
 function pointToCorrectAddress() {
@@ -208,6 +203,8 @@ window.addEventListener('load', async () => {
     localStorage.setItem("current_campaign", JSON.stringify(current_campaign))
     document.querySelector('.sclnk-ad-offer-amount').innerHTML = `${offer}%`
     document.querySelector('.sclnk-ad-offer-expiration').innerHTML = `${diffDays(expiration)} days`
+    document.querySelector('#sclnk-ad-name').innerHTML = current_campaign.name;
+    document.querySelector('#sclnk-ad-description').innerHTML = current_campaign.description;
     document.querySelector('.sclnk-ad-body').style.backgroundImage = `url(${image})`
     const timestamp = new Date();
     const user_id = localStorage.getItem('ethereumAddress') || await getAccount();
@@ -222,10 +219,10 @@ function parseImage(path) {
     return full_path
 }
 
-const connect_wallet = document.getElementById('connect-wallet');
-connect_wallet.addEventListener('click', (e) => {
-    getAddress();
-});
+// const connect_wallet = document.getElementById('connect-wallet');
+// connect_wallet.addEventListener('click', (e) => {
+//     getAddress();
+// });
 ad_offer.addEventListener('click', (e) => {
     activateOffer(e);
 })
