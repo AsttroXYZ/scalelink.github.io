@@ -153,10 +153,10 @@ function injectAd() {
                     <span id="sclnk-ad-description"></span>
                 </div>
                 <div class="sclnk-ad-offer">
-                    <div class="sclnk-ad-offer-activate" style="margin-left: 10px; display: flex; width: 25%; aspect-ratio: 1; background-color: white; border-radius: 50%">
+                    <div class="sclnk-ad-offer-activate" style="margin-left: 0.5vw; display: flex; width: 25%; aspect-ratio: 1; background-color: white; border-radius: 50%; text-align: center;">
                         <p class="sclnk-ad-offer-activate-icon" style="margin: auto;">&#43;</p>
                     </div>
-                    <div class="sclnk-ad-offer-copy" style="text-align: center; margin-left: 10px;">
+                    <div class="sclnk-ad-offer-copy" style="text-align: center; width: 75%">
                         <div class="sclnk-ad-offer-amount" style="font-size: 20px;"></div>
                         <div class="sclnk-ad-offer-expiration" style="font-size: 14px;">
                             7 days left
@@ -201,7 +201,7 @@ window.addEventListener('load', async () => {
     // get the image from the backend
     const image = current_campaign.image;
     localStorage.setItem("current_campaign", JSON.stringify(current_campaign))
-    document.querySelector('.sclnk-ad-offer-amount').innerHTML = `${offer}%`
+    document.querySelector('.sclnk-ad-offer-amount').innerHTML = `${offer*(10**(-18))} ETH`
     document.querySelector('.sclnk-ad-offer-expiration').innerHTML = `${diffDays(expiration)} days`
     document.querySelector('#sclnk-ad-name').innerHTML = current_campaign.name;
     document.querySelector('#sclnk-ad-description').innerHTML = current_campaign.description;
