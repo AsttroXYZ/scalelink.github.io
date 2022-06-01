@@ -71,13 +71,14 @@ async function getAccount() {
 async function activateOffer(e) {
     e.preventDefault();
     const publisher_id = current_campaign.publisher_id;
+    const campaign_id = current_campaign._id;
     let activation_timestamp = new Date();
     activation_timestamp = activation_timestamp.toString();
     const user_id = localStorage.getItem('ethereumAddress') || await getAccount();
     const message = {publisher_id, campaign_id, user_id, activation_timestamp}
     const signature = await signOffer(user_id, message)
     if (signature) {
-        saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, message, signature)
+        saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, signature)
         next_step_available = true;
         activateNextStep()
     }
@@ -103,17 +104,13 @@ async function signOffer(account, offer_data) {
 }
 
 async function getActivationHash(offer_data) {
-    const url = `http://127.0.0.1:8081/hash_activation?
-    user_id=${offer_data.user_id}
-    &campaign_id=${offer_data.campaign_id}
-    &publisher_id=${offer_data.publisher_id}
-    &activation_timestamp=${offer_data.activation_timestamp}`
+    const url = `http://127.0.0.1:8081/hash_activation?user_id=${offer_data.user_id}&campaign_id=${offer_data.campaign_id}&publisher_id=${offer_data.publisher_id}&activation_timestamp=${offer_data.activation_timestamp}`
     return fetch(url)
     .then((response)=>response.json())
     .then((responseJson)=>{return responseJson});
 }
 
-function saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, message, signature) {
+function saveActivationSignature(publisher_id, campaign_id, user_id, activation_timestamp, signature) {
     // if (!localStorage.getItem('activations')) {
     //     localStorage.setItem('activations', JSON.stringify([]))
     // }
@@ -121,13 +118,17 @@ function saveActivationSignature(publisher_id, campaign_id, user_id, activation_
     // curr_storage.push({publisher_id, campaign_id, user_id, timestamp, message, signature})
     // localStorage.setItem('activations', JSON.stringify(curr_storage))
     const data = {
+        'user_address': user_id,
+        'publisher_address': publisher_id,
+        'campaign_id': campaign_id,
+        'activation_timestamp': activation_timestamp,
         "signature": signature,
-        "activation_data": JSON.stringify({
-            publisher_id,
-            campaign_id,
-            user_id,
-            activation_timestamp
-        })
+        // "activation_data": JSON.stringify({
+        //     publisher_id,
+        //     campaign_id,
+        //     user_id,
+        //     activation_timestamp
+        // })
     }
     const url = `${API_ENDPOINT}/activations`
     $.post(url, data, ()=>{});
@@ -182,8 +183,9 @@ function pointToCorrectAddress() {
     }
 }
 
-window.addEventListener('message', iFrameReceiveAddress);
-pointToCorrectAddress();
+// window.addEventListener('message', iFrameReceiveAddress);
+// pointToCorrectAddress();
+getAddress();
 injectAd();
 const ad_container = document.getElementsByClassName("sclnk-ad-body")[0]
 const ad_offer = document.getElementsByClassName("sclnk-ad-offer")[0]
@@ -196,7 +198,7 @@ window.addEventListener('load', async () => {
         response = payload;
     })
     current_campaign = response.campaigns[0];
-    current_campaign.publisher_id = 'merkle_blog';
+    current_campaign.publisher_id = "0xE06Dff47bF94394f4A63C3bc0e6336B672949200";
     const publisher_id = current_campaign.publisher_id;
     campaign_id = current_campaign.campaign_id;
     const offer = current_campaign.reward;

@@ -28,7 +28,7 @@ modal_continue.addEventListener('click', ()=> {
 
 // requires current campaign to have a valid to address
 // purchase_btn.setAttribute('to_address', current_campaign.address);
-purchase_btn.setAttribute('to_address', "0x4f34b09b8d1f8A8c9c62cd3CfF77eA519125d119");
+purchase_btn.setAttribute('to_address', "0x86D7e324b4176e017fa66827913fa1F8DF9B23c5");
 item_name.innerHTML = current_campaign.name;
 item_description.innerHTML = current_campaign.description;
 item_preview_img.src = current_campaign.image;

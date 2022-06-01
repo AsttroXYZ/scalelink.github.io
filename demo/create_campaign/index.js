@@ -42,7 +42,7 @@ campaign_budget.addEventListener('input', function(){
 })
 
 
-async function createContract() {
+async function createContract(amount_ether) {
     const accounts = await window.ethereum.request({method: 'eth_requestAccounts'});
 	const account = accounts[0]
     const web3 = new Web3(window.ethereum);
@@ -56,7 +56,6 @@ async function createContract() {
     bytecode = smart_contract_data.bytecode
     let contract = new web3.eth.Contract(abi);
     let smart_contract_address;
-    const amount = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))
     const payout = 10
     const reward = document.getElementById("campaign-reward-amount").value
     const expiration = document.getElementById("campaign-expiration").value
@@ -70,7 +69,7 @@ async function createContract() {
         from: account,
         gas: 4712388,
         gasPrice: '100000000000',
-        value: amount*(10**18) / 1950
+        value: amount_ether*(10**18)
     }, function(error, transactionHash){
         if (error) {
             console.log("ERROR")
@@ -111,7 +110,8 @@ function uploadCampaignToBackend(campaign_data) {
 }
 
 async function createCampaign() {
-    const smart_contract_address = await createContract();
+    const amount_ether = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))  / 1950
+    const smart_contract_address = await createContract(amount_ether);
     console.log(`Smart Contract Address: ${smart_contract_address}`)
 
     let campaign_data = new FormData();
@@ -128,10 +128,12 @@ async function createCampaign() {
     if (error) {
         return;
     }
-
-    campaign_data.append("merchant_id", "demo_merchant");
-    campaign_data.append("smart_contract_address", smart_contract_address);
+    
+    campaign_data.set("budget", amount_ether*(10**9))
+    campaign_data.append("merchant_id", "62959f316ffb872d711a85bc");
+    campaign_data.append("address", smart_contract_address);
     campaign_data.append("payout", 10);
+    campaign_data.append("start_time", new Date());
     uploadCampaignToBackend(campaign_data);
     campaign_launched = true;
     launchSuccess();
