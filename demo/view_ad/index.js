@@ -143,7 +143,7 @@ function diffDays(exp) {
 function injectAd() {
     let ad_container = document.getElementById("top-content");
     let html = `
-    <span>Automatic Cash Back</span>
+    <span>Automatic Crypto Back</span>
     <div class="sclnk-ad-container">
         <div class="sclnk-ad-body">
             <div class="sclnk-ad-actions" style="width: 100%; height: 60%;">
@@ -193,7 +193,7 @@ window.addEventListener('load', async () => {
         response = payload;
     })
     current_campaign = response.campaigns[0];
-    current_campaign.publisher_id = "0xE06Dff47bF94394f4A63C3bc0e6336B672949200";
+    current_campaign.publisher_id = "0x2a2CaA980d8149B49917FA1F7f6999F84133D3F7";
     const publisher_id = current_campaign.publisher_id;
     campaign_id = current_campaign.campaign_id;
     const offer = current_campaign.reward;
@@ -211,13 +211,6 @@ window.addEventListener('load', async () => {
     const data = {campaign_id, publisher_id, user_id, timestamp}
     saveAdServe(data)
 })
-
-function parseImage(path) {
-    var path_pieces = path.split('\\')
-    var suffix = path_pieces.slice(-1)
-    var full_path = `assets/img/${suffix}`
-    return full_path
-}
 
 // const connect_wallet = document.getElementById('connect-wallet');
 // connect_wallet.addEventListener('click', (e) => {

@@ -13,9 +13,9 @@ function activateNextStep() {
         next_step.style.display = 'flex'; 
     }
 }
-function transactionSuccess() {
+function transactionSuccess(tx_hash) {
     if (transaction_complete) {
-        purchase_btn.innerHTML = "Transaction complete";
+        purchase_btn.innerHTML = `Transaction complete 🚀<br>Transaction hash: ${tx_hash}`;
         purchase_btn.classList.remove("submit-btn");
         purchase_btn.classList.add("successfully-launched");
     }
@@ -28,7 +28,7 @@ modal_continue.addEventListener('click', ()=> {
 
 // requires current campaign to have a valid to address
 // purchase_btn.setAttribute('to_address', current_campaign.address);
-purchase_btn.setAttribute('to_address', "0x86D7e324b4176e017fa66827913fa1F8DF9B23c5");
+purchase_btn.setAttribute('to_address', "0x235DebF99bdE1BF9c6080916D312e8C067876e52");
 item_name.innerHTML = current_campaign.name;
 item_description.innerHTML = current_campaign.description;
 item_preview_img.src = current_campaign.image;
@@ -56,7 +56,7 @@ async function purchaseItem(to_address, value_ether, gas_price_gwei, gas_limit_b
         next_step_available = true;
         activateNextStep();
         transaction_complete = true;
-        transactionSuccess()
+        transactionSuccess(tx_hash)
     });
 }
 

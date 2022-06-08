@@ -29,18 +29,18 @@ const day = today.getDate();
 document.getElementById('campaign-expiration').setAttribute('min', today.toISOString().split('T')[0])
 document.getElementById('campaign-expiration').setAttribute('max', new Date(year + 1, month, day).toISOString().split('T')[0])
 
-function launchSuccess() {
+function launchSuccess(smart_contract_address) {
     if (campaign_launched) {
-        launch_campaign.innerHTML = "Campaign successfully launched";
+        launch_campaign.innerHTML = `Campaign successfully launched 🚀<br> Smart contract: ${smart_contract_address}`;
         launch_campaign.classList.remove("submit-btn");
         launch_campaign.classList.add("successfully-launched");
     }
 }
 
-campaign_budget.addEventListener('input', function(){
-    let current_value = campaign_budget.value.replaceAll(",", "").replaceAll("$", "")
-    campaign_budget.value = "$" + current_value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-})
+// campaign_budget.addEventListener('input', function(){
+//     let current_value = campaign_budget.value.replaceAll(",", "").replaceAll("$", "")
+//     campaign_budget.value = "$" + current_value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+// })
 
 
 async function createContract(amount_ether, payout, reward) {
@@ -108,12 +108,13 @@ function uploadCampaignToBackend(campaign_data) {
 }
 
 async function createCampaign() {
-    const payout_input = 0.01
+    const payout_input = document.getElementById("campaign-payout-amount").value
     const payout = (payout_input)*(10**18)
     const reward_input = document.getElementById("campaign-reward-amount").value
     const reward = (reward_input)*(10**18)
 
-    const amount_ether = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))  / 1950
+    // const amount_ether = parseFloat(campaign_budget.value.replaceAll(",", "").replaceAll("$", ""))  / 1950
+    const amount_ether = parseFloat(campaign_budget.value)
     
     const smart_contract_address = await createContract(amount_ether, `${payout}`, `${reward}`);
     console.log(`Smart Contract Address: ${smart_contract_address}`)
@@ -141,7 +142,7 @@ async function createCampaign() {
     campaign_data.append("start_time", new Date());
     uploadCampaignToBackend(campaign_data);
     campaign_launched = true;
-    launchSuccess();
+    launchSuccess(smart_contract_address);
     next_step_available = true;
     activateNextStep();
 }
@@ -155,6 +156,8 @@ campaign_image.addEventListener('change', function() {
         sclnk_ad_body.style.background = `url(${src}) no-repeat center center`;
         sclnk_ad_body.style.visibility = 'visible'
         sclnk_ad_offer.style.visibility = 'visible'
+        document.getElementById('sclnk-ad-name').innerHTML = document.getElementById("campaign-name").value;
+        document.getElementById('sclnk-ad-description').innerHTML =  document.getElementById("campaign-description").value;
         document.getElementById('image-preview').style.display = 'none'
         document.getElementById('image-preview-subtext').style.display = 'block'
     } else {

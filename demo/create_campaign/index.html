@@ -13,7 +13,7 @@
         <link rel="icon" href="../assets/img/favicon.png">
     </head>
     <body>
-        <div id="modal">
+        <div id="modal" class="hidden">
             <div id="modal-content">
                 <div class="modal-title modal-section">
                     First step: Merchant launches a campaign
@@ -34,7 +34,7 @@
             <div class="navbar-navigation">
                 <a href="../overview"><div id="back-btn"><-- Back</div></a>
                 <div id="step-name">Merchant launches a Campaign</div>
-                <a href="../campaign_smart_contract"><div id="next-btn" class="hidden">Next</div></a>
+                <a href="../view_ad"><div id="next-btn" class="hidden">Next</div></a>
             </div>
         </nav>
         <div class="container">
@@ -62,6 +62,11 @@
                             <div class="sclnk-ad-body" style="width: 100%; height: 100%; background-size: 100%; border-radius: 5px; position: relative;">
                                 <span id="image-preview" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">No image selected</span>
                                 <div class="sclnk-ad-actions" style="width: 100%; height: 45%;">
+                                    <span class="sclnk-close-ad" style="color: white; display:inline-block; margin: 10px; cursor: pointer;">&#x2715</span>
+                                    <div class="sclnk-ad-info" style="margin-top: 30px;">
+                                        <b id="sclnk-ad-name"></b><br>
+                                        <span id="sclnk-ad-description"></span>
+                                    </div>
                                     <div class="sclnk-ad-offer" style="cursor: pointer; display: flex; align-items: center; height: 100%; width: 30%; float: right; visibility: hidden; margin: 10px; background-color: rgba(255, 255, 255, 0.5); border-radius: 5px; user-select: none; -moz-user-select: none; -webkit-user-select: none;">
                                         <div class="sclnk-ad-offer-activate" style="margin-left: 10px; display: flex; width: 25%; aspect-ratio: 1; background-color: white; border-radius: 50%">
                                             <p class="sclnk-ad-offer-activate-icon" style="margin: auto;">&#43;</p>
@@ -84,8 +89,8 @@
                 <div class="col-6">
                     <div class="box">
                         <div class="section-header">Constraints</div>
-                        <label class="input-header" for="campaign-budget">What is the total budget? ($USD)</label><br>
-                        <input type="text" class="input" id="campaign-budget" placeholder="$10,000" name="budget"></input><br><br>
+                        <label class="input-header" for="campaign-budget">What is the total budget? ($ETH)</label><br>
+                        <input type="text" class="input" id="campaign-budget" placeholder="10 ETH" name="budget"></input><br><br>
                         
                         <label class="input-header" for="campaign-expiration">When does this campaign end?</label><br>
                         <input type="date" class="input" id="campaign-expiration" name="expiration"></input><br><br>
@@ -101,11 +106,10 @@
                             <option value="ethereum_mainnet">Ethereum Mainnet</option>
                         </select><br><br>
                 
-                        <!-- <label class="input-header" for="campaign-to-address">What is your address for this blockchain?</label><br>
-                        <input class="input" type="text" id="campaign-to-address" placeholder="0X0" name="merchant_address"></input><br><br> -->
-                
-                        <label class="input-header" for="campaign-reward-amount">What % of the tranasction amount should users get back as a reward?</label><br>
-                        <input class="input" type="number" id="campaign-reward-amount" placeholder="10" name="reward"></input><br><br>
+                        <label class="input-header" for="campaign-reward-amount">How much would you like to reward users for transacting with you? ($ETH)</label><br>
+                        <input class="input" type="number" id="campaign-reward-amount" placeholder="1 ETH" name="reward"></input><br><br>
+                        <label class="input-header" for="campaign-reward-amount">How much would you like to pay publishers for the transaction? ($ETH)</label><br>
+                        <input class="input" type="number" id="campaign-payout-amount" placeholder="1 ETH" name="payout"></input><br><br>
                     </div>
                 </div>
                 <div class="col-12">
